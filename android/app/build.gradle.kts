@@ -16,8 +16,8 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
+        jvmTarget = "17"
+}
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
@@ -28,6 +28,13 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        val appName = if (project.hasProperty("APP_NAME")) {
+            project.property("APP_NAME") as String
+        } else {
+            "DigiNews" // Nama default jika lupa pakai --dart-define
+        }
+        
+        resValue("string", "app_name", appName)
     }
 
     buildTypes {
