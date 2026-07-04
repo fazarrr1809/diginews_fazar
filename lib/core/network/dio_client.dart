@@ -5,13 +5,13 @@ class DioClient {
 
   DioClient() : _dio = Dio() {
     _dio
-      ..options.baseUrl = 'https://newsapi.org/v2/' // Sesuai rekomendasi soal (NewsAPI.org)
+      ..options.baseUrl = 'https://newsapi.org/v2/'
       ..options.connectTimeout = const Duration(seconds: 10)
       ..options.receiveTimeout = const Duration(seconds: 10)
       ..interceptors.add(LogInterceptor(
         requestBody: true,
         responseBody: true,
-      )); // Ini Interceptor wajib untuk mencetak log API
+      )); 
   }
 
   Dio get dio => _dio;

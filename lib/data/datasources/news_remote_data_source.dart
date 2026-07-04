@@ -8,12 +8,12 @@ class NewsRemoteDataSource {
 
   Future<List<NewsModel>> fetchArticles() async {
     try {
-      // Kita gunakan endpoint top-headlines dari NewsAPI dengan API Key dummy/publik
       final response = await _dioClient.dio.get(
-        'top-headlines',
+        'everything', // Diubah dari top-headlines menjadi everything
         queryParameters: {
-          'country': 'id',
-          'apiKey': '9be69399478a48ff8a9df6be0702df91', // Contoh API Key publik sementara
+          'q': 'indonesia', // Mencari semua berita yang mengandung kata 'indonesia'
+          'pageSize': 20,    // Mengambil 20 berita saja biar ringan
+          'apiKey': '7600d484de0b4942a6b44a6b3ef7f7ad', // API Key resmi Fazar
         },
       );
 
@@ -21,7 +21,7 @@ class NewsRemoteDataSource {
         final List<dynamic> articlesJson = response.data['articles'] ?? [];
         return articlesJson.map((json) => NewsModel.fromJson(json)).toList();
       } else {
-        throw Exception('Gagal mengambil data berita');
+        throw Exception('Gagal mengambil data berita resmi');
       }
     } catch (e) {
       throw Exception('Terjadi kesalahan jaringan: $e');

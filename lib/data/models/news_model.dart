@@ -9,12 +9,11 @@ class NewsModel {
     required this.urlToImage,
   });
 
-  // Fungsi untuk mengubah JSON dari API menjadi Objek Dart
   factory NewsModel.fromJson(Map<String, dynamic> json) {
     return NewsModel(
       title: json['title'] ?? 'No Title',
       description: json['description'] ?? 'No Description',
-      urlToImage: json['urlToImage'] ?? '',
+      urlToImage: json['urlToImage'] ?? '', // Menggunakan key 'urlToImage' bawaan NewsAPI
     );
   }
 }
