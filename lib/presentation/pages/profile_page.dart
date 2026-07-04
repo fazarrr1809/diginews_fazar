@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:flutter/services.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -11,6 +12,25 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   int _clickCount = 0;
   bool _showEasterEgg = false;
+
+  // Integrasi Method Channel Native Android (Kotlin)
+  static const platform = MethodChannel('com.fazar.diginews/nim');
+  String _reversedNimResult = "";
+
+  // Fungsi untuk memicu Method Channel ke kode Native Kotlin
+  Future<void> _triggerNativeReverseNIM() async {
+    try {
+      // TANTANGAN ANTI-AI: Mengirim string NIM dari Dart ke Kotlin
+      final String result = await platform.invokeMethod('reverseNIM', {'nim': '20123065'});
+      setState(() {
+        _reversedNimResult = result;
+      });
+    } on PlatformException catch (e) {
+      setState(() {
+        _reversedNimResult = "Gagal memanggil native: '${e.message}'.";
+      });
+    }
+  }
 
   void _handleProfileClick() {
     setState(() {
@@ -62,7 +82,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     radius: 75,
                     backgroundColor: Colors.blueGrey,
                     child: Icon(Icons.person, size: 80, color: Colors.white), 
-                    // Nanti Anda bisa menggantinya dengan AssetImage foto asli Anda
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -75,6 +94,31 @@ class _ProfilePageState extends State<ProfilePage> {
                   'NIM: 20123065',
                   style: TextStyle(fontSize: 18, color: Colors.grey),
                 ),
+                const SizedBox(height: 20),
+                
+                // Tombol Pemicu Native Integration (Method Channel)
+                ElevatedButton(
+                  onPressed: _triggerNativeReverseNIM,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueGrey[900],
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('Picu Native Method Channel'),
+                ),
+                
+                // Menampilkan hasil kembalian dari Kotlin di layar
+                if (_reversedNimResult.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    'Hasil dari Kotlin: $_reversedNimResult',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold, 
+                      color: Colors.blue,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+                
                 const SizedBox(height: 30),
                 Text('Ketukan Foto: $_clickCount / 5 (Ketuk cepat untuk kejutan!)'),
               ],
