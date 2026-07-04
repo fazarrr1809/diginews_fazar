@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:diginews_fazar/injection_container.dart';
 import 'package:diginews_fazar/presentation/bloc/news_cubit.dart';
 import 'package:diginews_fazar/presentation/bloc/news_state.dart';
+import 'package:diginews_fazar/presentation/pages/profile_page.dart';
 
 class NewsPage extends StatelessWidget {
   const NewsPage({super.key});
@@ -15,7 +16,18 @@ class NewsPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('DigiNews - Offline First'),
-          backgroundColor: Colors.blueGrey[900], // Warna gelap maskulin
+          backgroundColor: Colors.blueGrey[900],
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.account_circle, color: Colors.white),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+                );
+              },
+            ),
+          ],
         ),
         body: BlocBuilder<NewsCubit, NewsState>(
           builder: (context, state) {
