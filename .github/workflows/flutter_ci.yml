@@ -19,15 +19,18 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # Menggunakan Java 11 karena Flutter 3.10 paling stabil di versi ini
       - name: Set up Java Development Kit (JDK)
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '17'
+          java-version: '11'
 
+      # MENGUNCI FLUTTER KE VERSI 3.10.6 AGAR COCOK DENGAN SDK ANDA
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.10.6'
           channel: 'stable'
           cache: true
 
@@ -37,5 +40,12 @@ jobs:
       - name: Run Unit Tests
         run: flutter test
 
+      # MENAMBAHKAN FLAG TOLERANSI GRADLE
       - name: Build APK Release
-        run: flutter build apk --release --no-tree-shake-icons --build-name=1.0.0 --build-number=1
+        run: flutter build apk --release --no-tree-shake-icons --no-pub
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
