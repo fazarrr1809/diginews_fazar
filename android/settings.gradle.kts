@@ -1,5 +1,4 @@
 pluginManagement {
-    // Perbaikan utama: Cek FLUTTER_ROOT milik server GitHub dahulu, jika tidak ada baru baca local.properties secara aman
     val flutterSdkPath = System.getenv("FLUTTER_ROOT") ?: run {
         val properties = java.util.Properties()
         val localPropertiesFile = rootDir.resolve("local.properties")
@@ -21,6 +20,7 @@ pluginManagement {
 plugins {
     id("dev.flutter.flutter-plugin-loader") version "1.0.0"
     id("dev.flutter.flutter-gradle-plugin") version "1.0.0" apply false
+    id("com.android.application") version "8.7.3" apply false
     id("org.jetbrains.kotlin.android") version "2.1.0" apply false
 }
 
