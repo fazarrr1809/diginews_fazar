@@ -1,3 +1,9 @@
+plugins {
+    id("com.android.application") apply false
+    id("org.jetbrains.kotlin.android") apply false
+    id("dev.flutter.flutter-gradle-plugin") apply false
+}
+
 allprojects {
     repositories {
         google()
@@ -5,20 +11,23 @@ allprojects {
     }
 }
 
-val newBuildDir: Directory =
-    rootProject.layout.buildDirectory
-        .dir("../../build")
-        .get()
-rootProject.layout.buildDirectory.value(newBuildDir)
+// Konfigurasi direktori output build Flutter
+val newBuildDir = rootProject.layout.buildDirectory.dir("../../build").get().asFile
+rootProject.layout.buildDirectory.set(newBuildDir)
 
 subprojects {
-    val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
-    project.layout.buildDirectory.value(newSubprojectBuildDir)
-}
-subprojects {
-    project.evaluationDependsOn(":app")
+    project.layout.buildDirectory.set(newBuildDir.resolve(project.name))
 }
 
-tasks.register<Delete>("clean") {
-    delete(rootProject.layout.buildDirectory)
+// Memaksa seluruh dependensi pustaka menggunakan SDK 35 untuk mengatasi error lStar
+subprojects {
+    afterEvaluate {
+        val androidExtension = project.extensions.findByName("android") as? com.android.build.gradle.BaseExtension
+        if (androidExtension != null) {
+            androidExtension.compileSdkVersion(35)
+            androidExtension.defaultConfig {
+                targetSdkVersion(35)
+            }
+        }
+    }
 }
