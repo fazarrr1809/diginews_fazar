@@ -19,23 +19,23 @@ subprojects {
 }
 
 subprojects {
-    plugins.withId("com.android.library") {
-        val androidExtension = project.extensions.getByName("android") as? com.android.build.gradle.BaseExtension
+    afterEvaluate {
+        val androidExtension = project.extensions.findByName("android") as? com.android.build.gradle.BaseExtension
         androidExtension?.apply {
             compileSdkVersion(35)
             defaultConfig.targetSdkVersion(35)
+            
             if (namespace == null) {
-                namespace = "com.example." + project.name.replace("-", "_")
-            }
-        }
-    }
-    plugins.withId("com.android.application") {
-        val androidExtension = project.extensions.getByName("android") as? com.android.build.gradle.BaseExtension
-        androidExtension?.apply {
-            compileSdkVersion(35)
-            defaultConfig.targetSdkVersion(35)
-            if (namespace == null) {
-                namespace = "com.example." + project.name.replace("-", "_")
+                val manifestFile = project.file("src/main/AndroidManifest.xml")
+                var manifestPackage: String? = null
+                if (manifestFile.exists()) {
+                    val content = manifestFile.readText()
+                    val match = Regex("package=\"([^\"]+)\"").find(content)
+                    if (match != null) {
+                        manifestPackage = match.groupValues[1]
+                    }
+                }
+                namespace = manifestPackage ?: ("com.example." + project.name.replace("-", "_"))
             }
         }
     }
