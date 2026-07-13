@@ -18,14 +18,25 @@ subprojects {
     project.layout.buildDirectory.set(newBuildDir.resolve(project.name))
 }
 
-// PERBAIKAN FINAL: Menggunakan pemanggilan fungsi targetSdkVersion(35) 
-// tanpa operator '=' agar lolos dari validasi ApiVersion di server GitHub
 subprojects {
-    afterEvaluate {
-        val androidExtension = project.extensions.findByName("android") as? com.android.build.gradle.BaseExtension
-        if (androidExtension != null) {
-            androidExtension.compileSdkVersion(35)
-            androidExtension.defaultConfig.targetSdkVersion(35)
+    plugins.withId("com.android.library") {
+        val androidExtension = project.extensions.getByName("android") as? com.android.build.gradle.BaseExtension
+        androidExtension?.apply {
+            compileSdkVersion(35)
+            defaultConfig.targetSdkVersion(35)
+            if (namespace == null) {
+                namespace = "com.example." + project.name.replace("-", "_")
+            }
+        }
+    }
+    plugins.withId("com.android.application") {
+        val androidExtension = project.extensions.getByName("android") as? com.android.build.gradle.BaseExtension
+        androidExtension?.apply {
+            compileSdkVersion(35)
+            defaultConfig.targetSdkVersion(35)
+            if (namespace == null) {
+                namespace = "com.example." + project.name.replace("-", "_")
+            }
         }
     }
 }
